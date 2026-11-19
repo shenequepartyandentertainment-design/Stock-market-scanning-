@@ -1,0 +1,19 @@
+name: Stock Scanner
+
+on:
+  schedule:
+    - cron: "30 21 * * 1-5"   # weekdays 21:30 UTC (after the US market close)
+  workflow_dispatch:           # lets you run it manually from the Actions tab
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install yfinance pandas numpy scikit-learn requests
+      - run: python scanner.py
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
